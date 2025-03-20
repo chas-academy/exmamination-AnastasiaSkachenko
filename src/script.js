@@ -10,14 +10,15 @@ document.addEventListener("DOMContentLoaded", () => {
     let balance = 0;
 
     function updateBalance() {
-        balanceDiv.textContent = balance;
+        balanceDiv.textContent = `${balance}`;  // Ensure it's a string
     }
 
     function addTransaction(type) {
         const description = descInput.value.trim();
-        const amount = parseInt(amountInput.value, 10);
+        const amount = amountInput.value.trim();  // Keep as string for test compatibility
+        const amountNum = parseInt(amount, 10);  // Convert for calculations
 
-        if (!description || isNaN(amount) || amount <= 0) {
+        if (!description || isNaN(amountNum) || amountNum <= 0) {
             return;
         }
 
@@ -25,14 +26,18 @@ document.addEventListener("DOMContentLoaded", () => {
         if (type === "income") {
             listItem.textContent = `${description} - ${amount} kr (Inkomst)`;
             incomeList.appendChild(listItem);
-            balance += amount;
+            balance += amountNum;
         } else {
             listItem.textContent = `${description} - ${amount} kr (Utgift)`;
             expenseList.appendChild(listItem);
-            balance -= amount;
+            balance -= amountNum;
         }
         
         updateBalance();
+
+        // Clear input fields after adding transaction
+        descInput.value = "";
+        amountInput.value = "";
     }
 
     incomeBtn.addEventListener("click", () => addTransaction("income"));

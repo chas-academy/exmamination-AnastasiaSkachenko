@@ -12,6 +12,53 @@ let incomeTransactions = [];
 let expenseTransactions = [];
 let balance = 0;
 
+incomeBtn.addEventListener("click", () => {
+        const descValue = description.value.trim();
+    const amountValue = Number(amount.value);
+
+     if (descValue === "" || isNaN(amountValue) || amountValue <= 0) {
+        alert("Vänligen ange en giltig beskrivning och ett positivt belopp.");
+        return;
+    }
+
+    const transaction = { description: descValue, amount: amountValue, type };
+
+    incomeTransactions.push(transaction);
+    balance += amountValue;
+    
+
+    updateUI();
+
+    description.value = "";
+    amount.value = "";
+
+});
+
+expenseBtn.addEventListener("click", () => {
+    const descValue = description.value.trim();
+    const amountValue = Number(amount.value);
+
+     if (descValue === "" || isNaN(amountValue) || amountValue <= 0) {
+        alert("Vänligen ange en giltig beskrivning och ett positivt belopp.");
+        return;
+    }
+
+    const transaction = { description: descValue, amount: amountValue, type };
+
+
+    expenseTransactions.push(transaction);
+    balance -= amountValue;
+
+    updateUI();
+
+    description.value = "";
+    amount.value = "";
+
+});
+
+
+
+
 function updateUI() {
     incomeList.innerHTML = "";
     expenseList.innerHTML = "";
@@ -40,30 +87,5 @@ function updateUI() {
     balanceSpan.textContent = balance;
 }
 
-function addTransaction(type) {
-    const descValue = description.value.trim();
-    const amountValue = Number(amount.value);
 
-     if (descValue === "" || isNaN(amountValue) || amountValue <= 0) {
-        alert("Vänligen ange en giltig beskrivning och ett positivt belopp.");
-        return;
-    }
 
-    const transaction = { description: descValue, amount: amountValue, type };
-
-    if (type === "income") {
-        incomeTransactions.push(transaction);
-        balance += amountValue;
-    } else {
-        expenseTransactions.push(transaction);
-        balance -= amountValue;
-    }
-
-    updateUI();
-
-    description.value = "";
-    amount.value = "";
-}
-
-incomeBtn.addEventListener("click", () => addTransaction("income"));
-expenseBtn.addEventListener("click", () => addTransaction("expense"));

@@ -1,91 +1,40 @@
-// Hämta HTML-element
-const incomeBtn = document.getElementById('incomeBtn');
-const expenseBtn = document.getElementById('expenseBtn');
-const incomeList = document.getElementById('incomeList');
-const expenseList = document.getElementById('expenseList');
-const balanceSpan = document.getElementById('balance');
-const transactionList = document.getElementById('transactionList');
-const description = document.getElementById('desc');
-const amount = document.getElementById('amount');
-
-let incomeTransactions = [];
-let expenseTransactions = [];
-let balance = 0;
-
-incomeBtn.addEventListener("click", () => {
-        const descValue = description.value.trim();
-    const amountValue = Number(amount.value);
-
-     if (descValue === "" || isNaN(amountValue) || amountValue <= 0) {
-        alert("Vänligen ange en giltig beskrivning och ett positivt belopp.");
-        return;
-    }
-
-    const transaction = { description: descValue, amount: amountValue, type };
-
-    incomeTransactions.push(transaction);
-    balance += amountValue;
+document.addEventListener("DOMContentLoaded", () => {
+    const descInput = document.getElementById("desc");
+    const amountInput = document.getElementById("amount");
+    const incomeBtn = document.getElementById("incomeBtn");
+    const expenseBtn = document.getElementById("expenseBtn");
+    const incomeList = document.getElementById("incomeList");
+    const expenseList = document.getElementById("expenseList");
+    const balanceDiv = document.getElementById("balance");
     
+    let balance = 0;
 
-    updateUI();
-
-    description.value = "";
-    amount.value = "";
-
-});
-
-expenseBtn.addEventListener("click", () => {
-    const descValue = description.value.trim();
-    const amountValue = Number(amount.value);
-
-     if (descValue === "" || isNaN(amountValue) || amountValue <= 0) {
-        alert("Vänligen ange en giltig beskrivning och ett positivt belopp.");
-        return;
+    function updateBalance() {
+        balanceDiv.textContent = balance;
     }
 
-    const transaction = { description: descValue, amount: amountValue, type };
+    function addTransaction(type) {
+        const description = descInput.value.trim();
+        const amount = parseInt(amountInput.value, 10);
 
+        if (!description || isNaN(amount) || amount <= 0) {
+            return;
+        }
 
-    expenseTransactions.push(transaction);
-    balance -= amountValue;
+        const listItem = document.createElement("li");
+        if (type === "income") {
+            listItem.textContent = `${description} - ${amount} kr (Inkomst)`;
+            incomeList.appendChild(listItem);
+            balance += amount;
+        } else {
+            listItem.textContent = `${description} - ${amount} kr (Utgift)`;
+            expenseList.appendChild(listItem);
+            balance -= amount;
+        }
+        
+        updateBalance();
+    }
 
-    updateUI();
-
-    description.value = "";
-    amount.value = "";
-
+    incomeBtn.addEventListener("click", () => addTransaction("income"));
+    expenseBtn.addEventListener("click", () => addTransaction("expense"));
 });
-
-
-
-
-function updateUI() {
-    incomeList.innerHTML = "";
-    expenseList.innerHTML = "";
-    transactionList.innerHTML = "";
-
-    incomeTransactions.forEach((transaction) => {
-        const li = document.createElement("li");
-        li.classList = 'income'
-        li.textContent = `${transaction.description} - ${transaction.amount} kr`;
-        incomeList.appendChild(li);
-    });
-    expenseTransactions.forEach((transaction) => {
-        const li = document.createElement("li");
-        li.classList = 'expense'
-        li.textContent = `${transaction.description} - ${transaction.amount} kr`;
-        expenseList.appendChild(li);
-    });
-
-    [...incomeTransactions, ...expenseTransactions].forEach((transaction) => {
-        const li = document.createElement("li");
-        li.className = transaction.type
-        li.textContent = `${transaction.description}: ${transaction.type === 'income' ? '+' : '-'} ${transaction.amount} kr`;
-        transactionList.appendChild(li);
-    });
-
-    balanceSpan.textContent = balance;
-}
-
-
-
